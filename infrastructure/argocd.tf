@@ -7,7 +7,7 @@ resource "helm_release" "argocd" {
   chart            = "argo-cd"
   version          = "5.53.9"
   namespace        = "argocd"
-  wait = true
+  wait             = true
   create_namespace = true
   values = [
     templatefile("${path.module}/helm_values/argocd.yaml", {
@@ -18,7 +18,7 @@ resource "helm_release" "argocd" {
 
   set_sensitive {
     name  = "configs.secret.argocdServerAdminPassword"
-    value = bcrypt_hash.argo.id
+    value = bcrypt_hash.argocd_password.id
   }
 
   depends_on = [
@@ -121,43 +121,12 @@ resource "argocd_application" "app_of_apps" {
   ]
 }
 
-# resource "random_password" "argocd" {
-#   length           = 16
-#   special          = true
-#   override_special = "!#$%&*()-_=+[]{}<>:?"
-# }
+resource "random_password" "argocd_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
 
-# resource "bcrypt_hash" "argo" {
-#   cleartext = random_password.argocd.result
-# }
-
-# resource "aws_secretsmanager_secret" "argocd" {
-#   name                    = "argocd_admin_password"
-#   recovery_window_in_days = 0
-# }
-
-# resource "aws_secretsmanager_secret_version" "argocd" {
-#   secret_id     = aws_secretsmanager_secret.argocd.id
-#   secret_string = random_password.argocd.result
-# }
-
-# data "aws_iam_policy_document" "argocd" {
-#   statement {
-#     sid    = "EnableAdminsToReadSecret"
-#     effect = "Allow"
-
-#     # the assumed role can get the secret
-#     principals {
-#       type        = "AWS"
-#       identifiers = var.aws_auth_users[*].userarn
-#     }
-
-#     actions   = ["secretsmanager:GetSecretValue"]
-#     resources = ["*"]
-#   }
-# }
-
-# resource "aws_secretsmanager_secret_policy" "argocd" {
-#   secret_arn = aws_secretsmanager_secret.argocd.arn
-#   policy     = data.aws_iam_policy_document.argocd.json
-# }
+resource "bcrypt_hash" "argocd_password" {
+  cleartext = random_password.argocd_password.result
+}

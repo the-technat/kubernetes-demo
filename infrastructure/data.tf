@@ -5,8 +5,6 @@ locals {
 
 data "aws_availability_zones" "available" {}
 
-data "aws_caller_identity" "current" {}
-
 # use pre-build images by AWS
 data "aws_ami" "eks_default" {
   most_recent = true

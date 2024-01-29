@@ -9,30 +9,38 @@ variable "region" {
 }
 
 variable "dns_zone" {
-  type = string
+  type        = string
   description = "A DNS zone you are able to let NS records point to Route53"
+}
+
+variable "account_id" {
+  type        = string
+  description = "AWS Account ID"
+}
+
+variable "email" {
+  type        = string
+  description = "Mail used for ACME and other things"
 }
 
 variable "tags" {
   type = map(string)
   default = {
-    "cluster"    = var.cluster_name
     "managed-by" = "terraform"
     "repo"       = "github.com/the-technat/kubernetes-demo"
   }
   description = "Tags to apply to all resources"
 }
 
-
 ###################
 # IAM
 ###################
 variable "aws_auth_users" {
-  type = object({
+  type = list(object({
     userarn  = string
     username = string
     groups   = list(string)
-  })
+  }))
   default     = []
   description = "List of AWS IAM users you grant permissions in your cluster"
 }
@@ -109,7 +117,7 @@ variable "capacity_type" {
   default     = "SPOT"
   description = "Shall we use SPOT instances or on-demand instances?"
   validation {
-    condition     = can(regex("SPOT|ON_DEMAND", var.arch))
+    condition     = can(regex("SPOT|ON_DEMAND", var.capacity_type))
     error_message = "Supported values: SPOT|ON_DEMAND"
   }
 }

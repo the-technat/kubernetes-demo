@@ -1,13 +1,5 @@
 terraform {
-  backend "remote" {
-    organization = "technat"
-
-    workspaces {
-      name = "kubernetes-demo"
-    }
-  }
   required_version = ">= 1.0"
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -16,6 +8,18 @@ terraform {
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.25.2"
+    }
+    argocd = {
+      source  = "oboukili/argocd"
+      version = "6.0.3"
+    }
+    bcrypt = {
+      source  = "viktorradnai/bcrypt"
+      version = "0.1.2"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.6.0"
     }
   }
 }
