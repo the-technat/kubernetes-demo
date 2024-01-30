@@ -87,6 +87,7 @@ resource "kubernetes_ingress_v1" "argocd_server" {
   depends_on = [
     helm_release.cert_manager_extras,
     helm_release.contour,
+    helm_release.external_dns,
   ]
 }
 
