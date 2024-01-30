@@ -1,6 +1,6 @@
 provider "kubernetes" {
   host                   = module.infrastructure.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.infrastructure.cluster_certificate_authority_data)
+  cluster_ca_certificate = module.infrastructure.cluster_certificate_authority_data
 
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
@@ -13,7 +13,7 @@ provider "kubernetes" {
 provider "helm" {
   kubernetes {
     host                   = module.infrastructure.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.infrastructure.cluster_certificate_authority_data)
+    cluster_ca_certificate = module.infrastructure.cluster_certificate_authority_data
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
@@ -33,7 +33,7 @@ provider "argocd" {
   # plain_text = true
   kubernetes {
     host                   = module.infrastructure.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.infrastructure.cluster_certificate_authority_data)
+    cluster_ca_certificate = module.infrastructure.cluster_certificate_authority_data
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"

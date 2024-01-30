@@ -1,5 +1,5 @@
 locals {
-  contour_name = "contour"
+  contour_name  = "contour"
   ingress_class = "contour"
 }
 
@@ -14,7 +14,7 @@ resource "helm_release" "contour" {
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "contour"
   version    = "15.2.0"
-  namespace  = kubernetes_namespace_v1.albc.metadata[0].name
+  namespace  = kubernetes_namespace_v1.contour.metadata[0].name
 
   values = [
     templatefile("${path.module}/helm_values/contour.yaml", {

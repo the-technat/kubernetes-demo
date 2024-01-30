@@ -25,20 +25,7 @@ server:
       whenUnsatisfiable: DoNotSchedule
   service:
     annotations:
-      projectcontour.io/upstream-protocol.tls: "444" # requires configs.params.server.insecure=false
-  ingress:
-    enabled: true
-    https: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      ingress.kubernetes.io/force-ssl-redirect: "true" # not required if you do tls-passthrough
-    ingressClassName: ${class}
-    hosts:
-      - cd.${dns_zone}
-    tls:
-      - secretName: argocd-tls
-        hosts:
-          - cd.${dns_zone}
+      projectcontour.io/upstream-protocol.tls: "443" # requires configs.params.server.insecure=false
   priorityClassName: "system-cluster-critical"
   containerSecurityContext:
     allowPrivilegeEscalation: false

@@ -1,14 +1,23 @@
-##########
-# Argo CD
-##########
+locals {
+  argocd_name = "argocd"
+  argocd_fqdn = "cd.${var.dns_zone}"
+}
+
+resource "kubernetes_namespace_v1" "argocd" {
+  metadata {
+    name = local.argocd_name
+  }
+}
+
+
 resource "helm_release" "argocd" {
-  name             = "argocd"
-  repository       = "https://argoproj.github.io/argo-helm"
-  chart            = "argo-cd"
-  version          = "5.53.9"
-  namespace        = "argocd"
-  wait             = true
-  create_namespace = true
+  name       = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  version    = "5.53.9"
+  namespace  = kubernetes_namespace_v1.argocd.metadata[0].name
+  wait       = true
+
   values = [
     templatefile("${path.module}/helm_values/argocd.yaml", {
       dns_zone = var.dns_zone
@@ -24,7 +33,60 @@ resource "helm_release" "argocd" {
   depends_on = [
     module.eks,
     helm_release.cilium,
-    kubernetes_priority_class_v1.infra,
+  ]
+}
+
+resource "random_password" "argocd_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "bcrypt_hash" "argocd_password" {
+  cleartext = random_password.argocd_password.result
+}
+
+resource "kubernetes_ingress_v1" "argocd_server" {
+  metadata {
+    name      = "argocd-server"
+    namespace = kubernetes_namespace_v1.argocd.metadata[0].name
+
+    annotations = {
+      "cert-manager.io/cluster-issuer"           = "letsencrypt-prod"
+      "ingress.kubernetes.io/force-ssl-redirect" = "true"
+    }
+  }
+
+  spec {
+    ingress_class_name = local.ingress_class
+
+    rule {
+      host = local.argocd_fqdn
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "argocd-server"
+              port {
+                number = 443
+              }
+            }
+          }
+
+        }
+      }
+    }
+
+    tls {
+      hosts       = [local.argocd_fqdn]
+      secret_name = "argocd-tls"
+    }
+  }
+  depends_on = [
+    helm_release.cert_manager_extras,
+    helm_release.contour,
   ]
 }
 
@@ -32,19 +94,6 @@ resource "helm_release" "argocd" {
 ##########
 # General
 ##########
-# A priority class for stuff deployed via Argo CD
-resource "kubernetes_priority_class_v1" "infra" {
-  metadata {
-    name = "infra"
-  }
-
-  value = 1000000000
-
-  depends_on = [
-    module.eks
-  ]
-}
-
 resource "argocd_project" "apps" {
   metadata {
     name      = "apps"
@@ -86,7 +135,7 @@ resource "argocd_application" "app_of_apps" {
 
     source {
       repo_url        = "https://github.com/the-technat/kubernetes-demo.git"
-      path            = "infrastructure/apps"
+      path            = "apps"
       target_revision = "HEAD"
     }
 
@@ -121,12 +170,3 @@ resource "argocd_application" "app_of_apps" {
   ]
 }
 
-resource "random_password" "argocd_password" {
-  length           = 16
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
-resource "bcrypt_hash" "argocd_password" {
-  cleartext = random_password.argocd_password.result
-}

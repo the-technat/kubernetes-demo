@@ -4,8 +4,8 @@ resource "null_resource" "purge_aws_networking" {
   }
   provisioner "local-exec" {
     command = <<EOT
-      aws --profile cilium-testing eks --region ${var.region} update-kubeconfig --name ${var.cluster_name} --alias ${var.cluster_name}
-      curl -LO https://dl.k8s.io/release/v${var.eks_version}.0/bin/linux/amd64/kubectl
+      aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name} --alias ${var.cluster_name}
+      curl -L -o /tmp/kubectl https://dl.k8s.io/release/v${var.eks_version}.0/bin/linux/amd64/kubectl
       chmod 0755 /tmp/kubectl
       /tmp/kubectl -n kube-system delete daemonset kube-proxy --ignore-not-found 
       /tmp/kubectl -n kube-system delete daemonset aws-node --ignore-not-found

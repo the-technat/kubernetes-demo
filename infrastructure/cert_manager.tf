@@ -33,7 +33,7 @@ resource "helm_release" "cert_manager_extras" {
 
   values = [
     templatefile("${path.module}/helm_values/cert_manager_extras.yaml", {
-      email   = var.email
+      email  = var.email
       region = var.region
     })
   ]
@@ -49,7 +49,7 @@ module "cert_manager_dns_01_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.33.1"
 
-  role_name_prefix = "cert-manager"
+  role_name_prefix           = "cert-manager"
   attach_cert_manager_policy = true
 
   oidc_providers = {
