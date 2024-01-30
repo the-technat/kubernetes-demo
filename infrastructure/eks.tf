@@ -16,6 +16,16 @@ module "eks" {
   subnet_ids                     = module.vpc.private_subnets
   cluster_service_ipv4_cidr      = var.service_cidr
   cluster_endpoint_public_access = true
+  node_security_group_additional_rules = {
+    ingress_self_all = { # cilium requires many ports to be open node-by-node
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+  }
 
   # KMS
   attach_cluster_encryption_policy = false
