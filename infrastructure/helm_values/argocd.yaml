@@ -10,19 +10,6 @@ configs:
     policy.default: role:readonly
 
 server:
-  replicas: 3
-  env:
-    - name: ARGOCD_API_SERVER_REPLICAS
-      value: "3"
-  pdb:
-    minAvailable: 1
-  topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: kubernetes.io/hostname
-      whenUnsatisfiable: DoNotSchedule
-    - maxSkew: 1
-      topologyKey: topology.kubernetes.io/zone
-      whenUnsatisfiable: DoNotSchedule
   service:
     annotations:
       projectcontour.io/upstream-protocol.tls: "443" # requires configs.params.server.insecure=false
@@ -44,11 +31,6 @@ server:
       memory: 64Mi
 
   controller:
-    replicas: 2
-    env:
-      - name: ARGOCD_CONTROLLER_REPLICAS
-        value: "2"
-    enableStatefulSet: true
     priorityClassName: "system-cluster-critical"
     containerSecurityContext:
       allowPrivilegeEscalation: false
@@ -113,7 +95,6 @@ server:
         memory: 64Mi
 
   repoServer:
-    replicas: 3
     priorityClassName: "system-cluster-critical"
     containerSecurityContext:
       allowPrivilegeEscalation: false
@@ -151,3 +132,46 @@ server:
       requests:
         cpu: 50m
         memory: 64Mi
+        
+extraObjects: 
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: apps
+    namespace: argocd
+  spec:
+    description: All Apps deployed using Argo CD
+    sourceRepos:
+    - '*'
+    destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: app-of-apps
+    namespace: argocd
+  spec:
+    project: apps
+    source:
+      repoURL: https://github.com/the-technat/kubernetes-demo.git
+      targetRevision: HEAD
+      path: apps
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated: 
+        prune: true
+        selfHeal: true 
+        allowEmpty: true
+      syncOptions:    
+      - ServerSideApply=true
+      - CreateNamespace=true 
+     

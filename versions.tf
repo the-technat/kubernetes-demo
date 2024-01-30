@@ -15,9 +15,6 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
-    argocd = {
-      source = "oboukili/argocd"
-    }
     bcrypt = {
       source = "viktorradnai/bcrypt"
     }

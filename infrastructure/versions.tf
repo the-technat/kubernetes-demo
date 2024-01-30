@@ -9,10 +9,6 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "2.25.2"
     }
-    argocd = {
-      source  = "oboukili/argocd"
-      version = "6.0.3"
-    }
     bcrypt = {
       source  = "viktorradnai/bcrypt"
       version = "0.1.2"
