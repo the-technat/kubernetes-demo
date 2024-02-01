@@ -21,5 +21,8 @@ terraform {
     random = {
       source = "hashicorp/random"
     }
+    hetznerdns = {
+      source = "timohirt/hetznerdns"
+    }
   }
 }
