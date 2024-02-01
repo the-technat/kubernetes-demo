@@ -25,20 +25,35 @@ data "aws_caller_identity" "current" {}
 ################
 # DNS
 ################
-resource "aws_route53_zone" "primary" {
-  name = "aws.technat.dev"
-}
-
 data "hetznerdns_zone" "dns_zone" {
   name = "technat.dev"
 }
-
-resource "hetznerdns_record" "ns_records_zone" {
-  for_each = aws_route53_zone.primary.name_servers
-
+resource "hetznerdns_record" "ns_records_zone_1" {
   zone_id = data.hetznerdns_zone.dns_zone.id
   name    = "aws"
-  value   = each.value
+  value   = module.eks_full.ns_records[0]
+  type    = "NS"
+  ttl     = 60
+}
+
+resource "hetznerdns_record" "ns_records_zone_2" {
+  zone_id = data.hetznerdns_zone.dns_zone.id
+  name    = "aws"
+  value   = module.eks_full.ns_records[1]
+  type    = "NS"
+  ttl     = 60
+}
+resource "hetznerdns_record" "ns_records_zone_3" {
+  zone_id = data.hetznerdns_zone.dns_zone.id
+  name    = "aws"
+  value   = module.eks_full.ns_records[2]
+  type    = "NS"
+  ttl     = 60
+}
+resource "hetznerdns_record" "ns_records_zone_4" {
+  zone_id = data.hetznerdns_zone.dns_zone.id
+  name    = "aws"
+  value   = module.eks_full.ns_records[3]
   type    = "NS"
   ttl     = 60
 }
