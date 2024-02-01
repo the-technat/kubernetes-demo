@@ -1,4 +1,4 @@
-module "infrastructure" {
+module "eks_full" {
   source = "git::https://github.com/the-technat/terraform-aws-eks-full.git"
 
   cluster_name      = "kiwi"
