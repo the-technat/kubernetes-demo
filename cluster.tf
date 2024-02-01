@@ -38,7 +38,7 @@ resource "hetznerdns_record" "ns_records_zone_1" {
 
 resource "hetznerdns_record" "ns_records_zone_2" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = "dat"
+  name    = "day"
   value   = "${module.eks_full.ns_records[1]}."
   type    = "NS"
   ttl     = 60
