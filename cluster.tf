@@ -30,30 +30,30 @@ data "hetznerdns_zone" "dns_zone" {
 }
 resource "hetznerdns_record" "ns_records_zone_1" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = "aws"
-  value   = module.eks_full.ns_records[0]
+  name    = "day"
+  value   = "${module.eks_full.ns_records[0]}."
   type    = "NS"
   ttl     = 60
 }
 
 resource "hetznerdns_record" "ns_records_zone_2" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = "aws"
-  value   = module.eks_full.ns_records[1]
+  name    = "dat"
+  value   = "${module.eks_full.ns_records[1]}."
   type    = "NS"
   ttl     = 60
 }
 resource "hetznerdns_record" "ns_records_zone_3" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = "aws"
-  value   = module.eks_full.ns_records[2]
+  name    = "day"
+  value   = "${module.eks_full.ns_records[2]}."
   type    = "NS"
   ttl     = 60
 }
 resource "hetznerdns_record" "ns_records_zone_4" {
   zone_id = data.hetznerdns_zone.dns_zone.id
-  name    = "aws"
-  value   = module.eks_full.ns_records[3]
+  name    = "day"
+  value   = "${module.eks_full.ns_records[3]}."
   type    = "NS"
   ttl     = 60
 }
