@@ -22,12 +22,19 @@ module "eks_full" {
 
 data "aws_caller_identity" "current" {}
 
+################
+# DNS
+################
+resource "aws_route53_zone" "primary" {
+  name = "aws.technat.dev"
+}
+
 data "hetznerdns_zone" "dns_zone" {
   name = "technat.dev"
 }
 
 resource "hetznerdns_record" "ns_records_zone" {
-  for_each = module.eks_full.ns_records
+  for_each = aws_route53_zone.primary.name_servers
 
   zone_id = data.hetznerdns_zone.dns_zone.id
   name    = "aws"
