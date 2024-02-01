@@ -3,7 +3,7 @@ module "eks_full" {
 
   cluster_name      = "kiwi"
   region            = "eu-west-1"
-  dns_zone          = "aws.technat.dev"
+  dns_zone          = "day.technat.dev"
   account_id        = data.aws_caller_identity.current.account_id
   onboarding_repo   = "https://github.com/the-technat/kubernetes-demo.git"
   onboarding_folder = "apps"
