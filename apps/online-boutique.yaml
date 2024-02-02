@@ -10,12 +10,10 @@ spec:
     targetRevision: 0.9.0
     helm:
       releaseName: onlineboutique 
-      # parameters:
-      # - name: "nginx-ingress.controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/hostname"
-      #   value: mydomain.example.com
-      # - name: "ingress.annotations.kubernetes\\.io/tls-acme"
-      #   value: "true"
-      #   forceString: true # ensures that value is treated as a string
+      parameters:
+      - name: frontend.externalService
+        value: "false"
+     
 
       # # Values file as block file. Prefer to use valuesObject if possible (see below)
       # values: |
