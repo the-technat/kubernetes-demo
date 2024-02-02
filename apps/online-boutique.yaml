@@ -6,7 +6,7 @@ spec:
   project: default
   source:
     chart: onlineboutique 
-    repoURL: oci://us-docker.pkg.dev/online-boutique-ci/charts/onlineboutique
+    repoURL: us-docker.pkg.dev/online-boutique-ci/charts
     targetRevision: 0.9.0
     helm:
       releaseName: onlineboutique 
