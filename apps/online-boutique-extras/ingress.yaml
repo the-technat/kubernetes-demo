@@ -6,7 +6,7 @@ metadata:
     ingress.kubernetes.io/force-ssl-redirect: "true"
   name: frontend
 spec:
-  ingressClassName: contour
+  ingressClassName: nginx
   rules:
   - host: shop.day.technat.dev
     http:
