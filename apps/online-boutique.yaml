@@ -4,52 +4,21 @@ metadata:
   name: online-boutique
 spec:
   project: default
-  source:
-    chart: onlineboutique 
+  sources:
+  - repoURL: https://github.com/the-technat/kubernetes-demo.git
+    path: apps/online-boutique-extras
+    targetRevision: HEAD
+  - chart: onlineboutique 
     repoURL: us-docker.pkg.dev/online-boutique-ci/charts
     targetRevision: 0.9.0
     helm:
       releaseName: onlineboutique 
       parameters:
       - name: frontend.externalService
-        value: "false"
-     
-
-      # # Values file as block file. Prefer to use valuesObject if possible (see below)
-      # values: |
-      #   ingress:
-      #     enabled: true
-      #     path: /
-      #     hosts:
-      #       - mydomain.example.com
-      #     annotations:
-      #       kubernetes.io/ingress.class: nginx
-      #       kubernetes.io/tls-acme: "true"
-      #     labels: {}
-      #     tls:
-      #       - secretName: mydomain-tls
-      #         hosts:
-      #           - mydomain.example.com
-
-      # # Values file as block file. This takes precedence over values
-      # valuesObject:
-      #   ingress:
-      #     enabled: true
-      #     path: /
-      #     hosts:
-      #       - mydomain.example.com
-      #     annotations:
-      #       kubernetes.io/ingress.class: nginx
-      #       kubernetes.io/tls-acme: "true"
-      #     labels: {}
-      #     tls:
-      #       - secretName: mydomain-tls
-      #         hosts:
-      #           - mydomain.example.com
+        value: "false" # disables the integrated deployment of a loadbalancer
   destination:
     server: https://kubernetes.default.svc
     namespace: online-boutique
-
   syncPolicy:
     automated:
       prune: true 
