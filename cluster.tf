@@ -22,6 +22,18 @@ module "eks_full" {
 
 data "aws_caller_identity" "current" {}
 
+
+################
+# Outputs
+################
+output "grafana_password" {
+  value = nonsensitive(module.eks_full.grafana_password)
+}
+
+output "argocd_password" {
+  value = nonsensitive(module.eks_full.argocd_password)
+}
+
 ################
 # DNS
 ################
