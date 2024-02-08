@@ -5,17 +5,33 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/the-technat/kubernetes-demo.git
-      path: apps/online-boutique-extras
-      targetRevision: HEAD
-    - chart: onlineboutique
-      repoURL: us-docker.pkg.dev/online-boutique-ci/charts
-      targetRevision: 0.9.0
+    - repoURL: https://github.com/the-technat/microservices-demo.git
+      path: helm-chart
+      targetRevision: main
       helm:
-        releaseName: onlineboutique
-        parameters:
-          - name: frontend.externalService
-            value: "false" # disables the integrated deployment of a loadbalancer
+        values: |
+          frontend:
+            ingress:
+              enabled: true
+              className: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                ingress.kubernetes.io/force-ssl-redirect: "true"
+              hosts:
+              - host: shop.aws.technat.dev
+                paths:
+                - path: /
+                  pathType: Prefix
+              tls:
+              - secretName: frontend-tls
+                hosts:
+                - shop.aws.technat.day
+            autoscaling:
+              enabled: true
+              mindReplicas: 1
+              maxReplicas: 100
+              targetCPUUtilizationPercentage: 60
+              targetMemoryUtilizationPercentage: 60
   destination:
     server: https://kubernetes.default.svc
     namespace: online-boutique
