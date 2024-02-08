@@ -1,17 +1,17 @@
 module "eks_full" {
   source = "git::https://github.com/the-technat/terraform-aws-eks-full.git"
 
-  cluster_name      = "kiwi"
-  region            = "eu-west-1" # also change in providers.tf
+  cluster_name      = "demo"
+  region            = "eu-west-1" # also change in provider definition below
   dns_zone          = "aws.technat.dev" # also change in the NS records below
-  account_id        = data.aws_caller_identity.current.account_id
+  account_id        = "351425708426"
   onboarding_repo   = "https://github.com/the-technat/kubernetes-demo.git"
   onboarding_folder = "apps"
   email             = "technat+grapes@technat.ch"
 
   aws_auth_users = [
     {
-      userarn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/technat"
+      userarn  = "arn:aws:iam::351425708426:user/technat"
       username = "technat"
       groups   = ["system:masters"]
     },
@@ -20,8 +20,9 @@ module "eks_full" {
   tags = {}
 }
 
-data "aws_caller_identity" "current" {}
-
+provider "aws" {
+  region = "eu-west-1"
+}
 
 ################
 # Outputs
