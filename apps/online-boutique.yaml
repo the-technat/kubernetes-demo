@@ -25,7 +25,7 @@ spec:
               tls:
               - secretName: frontend-tls
                 hosts:
-                - shop.aws.technat.day
+                - shop.aws.technat.dev
             autoscaling:
               enabled: true
               mindReplicas: 1
