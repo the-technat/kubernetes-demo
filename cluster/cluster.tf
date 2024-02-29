@@ -4,10 +4,10 @@ module "eks_full" {
   cluster_name      = "demo"
   region            = "eu-west-1" # also change in provider definition below
   dns_zone          = "aws.technat.dev" # also change in the NS records below
-  account_id        = "351425708426"
+  account_id        = "351425708426" # also change in aws_auth_users list below
   onboarding_repo   = "https://github.com/the-technat/kubernetes-demo.git"
   onboarding_folder = "apps"
-  email             = "technat+grapes@technat.ch"
+  email             = "technat+aws@technat.ch"
 
   aws_auth_users = [
     {
