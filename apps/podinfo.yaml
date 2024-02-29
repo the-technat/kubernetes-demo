@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo
+spec:
+  project: default
+  sources:
+    - repoURL: oci://ghcr.io/stefanprodan/charts
+      chart: podinfo
+      targetRevision: 6.6.0
+      helm:
+        relaseName: podinfo
+        values: |
+          replicaCount: 3
+          ui:
+            color: "#9BC53D" # Yellow Green
+            message: "Container Day 2023" 
+            logo: ""
+          service:
+            annotations: 
+              prometheus.io/scrape: "true"
+              prometheus.io/port: "9797"
+          hpa:
+            enabled: true
+            maxReplicas: 10
+            cpu: 60
+            memory: 500Mi
+            requests: 50
+
+          # Redis address in the format tcp://<host>:<port>
+          cache: ""
+          redis:
+            enabled: true
+
+          ingress:
+            enabled: true
+            className: "nginx"
+            additionalLabels: {}
+            annotations: 
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                ingress.kubernetes.io/force-ssl-redirect: "true"
+            hosts:
+              - host: shop.aws.technat.dev
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls: 
+              - secretName: frontend-tls
+                hosts:
+                  - shop.aws.technat.dev
+
+          resources:
+            requests:
+              cpu: 1m
+              memory: 16Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: podinfo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5 
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 3m 
