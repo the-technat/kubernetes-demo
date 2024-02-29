@@ -7,7 +7,7 @@ spec:
   sources:
     - repoURL: https://github.com/the-technat/microservices-demo.git
       path: helm-chart
-      targetRevision: develop
+      targetRevision: main
       helm:
         values: |
           frontend:
