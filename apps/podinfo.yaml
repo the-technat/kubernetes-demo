@@ -5,7 +5,7 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: oci://ghcr.io/stefanprodan/charts
+    - repoURL: ghcr.io/stefanprodan/charts
       chart: podinfo
       targetRevision: 6.6.0
       helm:
