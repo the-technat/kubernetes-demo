@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-new
+spec:
+  project: default
+  sources:
+    - repoURL: ghcr.io/stefanprodan/charts
+      chart: podinfo
+      targetRevision: 6.6.0
+      helm:
+        releaseName: podinfo-new
+        values: |
+          replicaCount: 3
+          ui:
+            color: "#FFCC00" 
+            message: "Container Day 2024" 
+            logo: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fyt3.ggpht.com%2Fa%2FAGF-l7_-aYr3cKL8UGuTuCgBRK35I_KB4LmSh_LXBw%3Ds900-c-k-c0xffffffff-no-rj-mo&f=1&nofb=1&ipt=4fc04d8839dc0de37892633b2ba0e79a7f30429415e7d56a06979dd1e31df38e&ipo=images"
+          service:
+            annotations: 
+              prometheus.io/scrape: "true"
+              prometheus.io/port: "9797"
+          hpa:
+            enabled: true
+            maxReplicas: 10
+            cpu: 50 # currently that would mean 25m
+            memory: 32Mi
+
+          redis:
+            enabled: true
+
+          ingress:
+            enabled: true
+            className: "nginx"
+            annotations: 
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                ingress.kubernetes.io/force-ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/canary: "true"
+                nginx.ingress.kubernetes.io/canary-weight: "50"
+            hosts:
+              - host: aws.technat.dev
+                paths:
+                  - path: /
+                    pathType: Prefix
+            tls: 
+              - secretName: frontend-tls
+                hosts:
+                  - aws.technat.dev
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 16Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: podinfo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5 
+      backoff:
+        duration: 5s 
+        factor: 2 
+        maxDuration: 3m 
