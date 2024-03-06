@@ -24,7 +24,7 @@ spec:
             enabled: true
             maxReplicas: 10
             cpu: 60
-            memory: 500Mi
+            memory: 32Mi
 
           # Redis address in the format tcp://<host>:<port>
           cache: ""
@@ -52,6 +52,9 @@ spec:
             requests:
               cpu: 1m
               memory: 16Mi
+            limits:
+              cpu: 1
+              memory: 500Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: podinfo
