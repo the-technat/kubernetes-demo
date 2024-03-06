@@ -9,7 +9,7 @@ spec:
       chart: podinfo
       targetRevision: 6.6.0
       helm:
-        relaseName: podinfo
+        releaseName: podinfo
         values: |
           replicaCount: 3
           ui:
