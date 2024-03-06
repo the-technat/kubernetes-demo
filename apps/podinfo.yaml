@@ -25,7 +25,6 @@ spec:
             maxReplicas: 10
             cpu: 60
             memory: 500Mi
-            requests: 50
 
           # Redis address in the format tcp://<host>:<port>
           cache: ""
