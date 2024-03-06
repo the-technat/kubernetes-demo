@@ -15,7 +15,7 @@ spec:
           ui:
             color: "#9BC53D" # Yellow Green
             message: "Container Day 2023" 
-            logo: ""
+            logo: "https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg"
           service:
             annotations: 
               prometheus.io/scrape: "true"
@@ -23,38 +23,35 @@ spec:
           hpa:
             enabled: true
             maxReplicas: 10
-            cpu: 60
+            cpu: 50 # currently that would mean 25m
             memory: 32Mi
 
-          # Redis address in the format tcp://<host>:<port>
-          cache: ""
           redis:
             enabled: true
 
           ingress:
             enabled: true
             className: "nginx"
-            additionalLabels: {}
             annotations: 
                 cert-manager.io/cluster-issuer: letsencrypt-prod
                 ingress.kubernetes.io/force-ssl-redirect: "true"
             hosts:
-              - host: shop.aws.technat.dev
+              - host: aws.technat.dev
                 paths:
                   - path: /
                     pathType: Prefix
             tls: 
               - secretName: frontend-tls
                 hosts:
-                  - shop.aws.technat.dev
+                  - aws.technat.dev
 
           resources:
             requests:
-              cpu: 1m
+              cpu: 50m
               memory: 16Mi
             limits:
-              cpu: 1
-              memory: 500Mi
+              cpu: 200m
+              memory: 200Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: podinfo
